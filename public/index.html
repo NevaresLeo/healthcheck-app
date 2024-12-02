@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check de Sites</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Health Check App</h1>
+        <button id="checkBtn">Verificar Sites</button>
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('checkBtn').addEventListener('click', async () => {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Limpar resultados anteriores
+
+            try {
+                // Realizar a requisição para o endpoint '/healthcheck'
+                const response = await fetch('/healthcheck');
+                const results = await response.json();
+
+                // Mostrar os resultados na página
+                results.forEach(result => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.classList.add('result', result.status);
+
+                    resultDiv.innerHTML = `
+            <p><strong>${result.message}</strong></p>
+            <p><em>Tempo: ${result.time}</em></p>
+          `;
+
+                    resultsContainer.appendChild(resultDiv);
+                });
+            } catch (error) {
+                resultsContainer.innerHTML = `<p>Erro ao carregar os resultados: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+
+</html>
